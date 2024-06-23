@@ -1,0 +1,25 @@
+---
+---
+
+<button class="btn btn-primary mb-10" id="stress1">Load 100,000 items into array</button>
+<button class="btn btn-primary" id="stress2">Sort 100,000 items</button>
+<!-- <button class="btn btn-primary" id="stress2">Create 20 setTimeouts</button> -->
+<script>
+    document.getElementById('stress1').addEventListener('click', function() {
+        var arr = [];
+        for (var i = 0; i < 100000; i++) {
+            arr.push(Math.random());
+        }
+        console.log('Array created');
+    });
+
+    document.getElementById('stress2').addEventListener('click', function() {
+        var arr = [];
+        for (var i = 0; i < 100000; i++) {
+            arr.push(Math.random());
+        }
+        console.log('Array created');
+        arr.sort();
+        console.log('Array sorted');
+    });
+</script>

@@ -1,0 +1,53 @@
+---
+---
+<div class="flex items-center justify-center">
+    <p id="disp" class="fixed opacity-70 text-center"></p>
+    <canvas id="canvas" width="800" height="800" class="bg-base-300 w-1/2 he-1/2 rounded-lg mb-10"></canvas>
+</div>
+<script>
+    const disp = document.getElementById("disp");
+    let min = performance.memory.usedJSHeapSize;
+    let max = performance.memory.usedJSHeapSize;
+
+    let graph_points = [];
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    function toMemoryText(bytes) {
+        if (bytes < 1024) {
+            return `${bytes} B`;
+        } else if (bytes < 1024 * 1024) {
+            return `${(bytes / 1024).toFixed(2)} KB`;
+        } else if (bytes < 1024 * 1024 * 1024) {
+            return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+        } else {
+            return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} GB`;
+        }
+    }
+
+    setInterval(() => {
+        min = Math.min(min, performance.memory.usedJSHeapSize);
+        max = Math.max(max, performance.memory.usedJSHeapSize);
+        disp.innerHTML = `Min: ${toMemoryText(min)}<br/>Max: ${toMemoryText(max)}<br/>Current: ${toMemoryText(performance.memory.usedJSHeapSize)} ${graph_points[graph_points.length-1] > graph_points[graph_points.length-30] ? "🔼" : "🔽"}`;
+
+        // render linegraph
+        graph_points.push(performance.memory.usedJSHeapSize / (max+(max*0.1)) * canvas.height);
+        if (graph_points.length > 800) {
+            graph_points.shift();
+        }
+
+        // console.log(graph_points);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.strokeStyle = "white";
+        ctx.moveTo(0, canvas.height - graph_points[0]);
+        for (let i = 1; i < graph_points.length; i++) {
+            ctx.lineTo(i, canvas.height - graph_points[i]);
+        }
+        ctx.stroke();
+
+
+    }, 10);
+</script>
